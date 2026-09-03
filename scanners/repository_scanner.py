@@ -1,0 +1,43 @@
+def scan_repository(repo_path):
+    repo_info = {
+    "has_readme": False,
+    "has_dockerfile": False,
+    "has_requirements": False,
+    "has_pyproject": False,
+    "has_env_example": False,
+    "total_files": 0,
+    "total_python_files": 0,
+    "total_markdown_files": 0,
+    "total_env_files": 0,
+    "python_files": []
+    }
+
+    if not repo_path:
+        print("No repository path provided. Aborting scan.")
+        return
+
+    for file in repo_path.rglob("*"):
+        if file.name.lower() == "readme.md":
+            repo_info["has_readme"] = True
+        if file.name.lower() == "dockerfile":
+            repo_info["has_dockerfile"] = True
+        if file.name.lower() == "requirements.txt":
+            repo_info["has_requirements"] = True
+        if file.name.lower() == "pyproject.toml":
+            repo_info["has_pyproject"] = True
+        if file.name.lower() == ".env.example":
+            repo_info["has_env_example"] = True
+
+        if file.suffix == ".py":
+            repo_info["python_files"].append(file)
+
+        if file.is_file():
+            repo_info["total_files"] += 1
+        if file.is_file() and file.suffix == ".py":
+            repo_info["total_python_files"] += 1
+        if file.is_file() and file.suffix == ".md":
+            repo_info["total_markdown_files"] += 1
+        if file.is_file() and file.suffix == ".env":
+            repo_info["total_env_files"] += 1
+       
+    return repo_info
