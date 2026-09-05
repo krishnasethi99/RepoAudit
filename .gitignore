@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+
+temp/
+
+repoaudit_report.md
+
+.venv/
+venv/
+
+.vscode/
+
+build/
+dist/
