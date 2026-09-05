@@ -9,7 +9,13 @@ def scan_repository(repo_path):
     "total_python_files": 0,
     "total_markdown_files": 0,
     "total_env_files": 0,
-    "python_files": []
+    "python_files": [],
+    "requirements_file": [],
+    "pyproject_file": [],
+    "env_example_files": [],
+    "readme_files": [],
+    "primary_readme": None,
+    "repo_path": repo_path,
     }
 
     if not repo_path:
@@ -17,27 +23,34 @@ def scan_repository(repo_path):
         return
 
     for file in repo_path.rglob("*"):
-        if file.name.lower() == "readme.md":
-            repo_info["has_readme"] = True
+        if file.name.lower() == "readme.md" or file.name.lower() == "readme":
+            if file.name.lower() == "readme.md" or file.name.lower() == "readme":
+                repo_info["has_readme"] = True
+                repo_info["readme_files"].append(file)
+                if file.parent == repo_path:
+                    repo_info["primary_readme"] = file
+
         if file.name.lower() == "dockerfile":
             repo_info["has_dockerfile"] = True
-        if file.name.lower() == "requirements.txt":
+        if file.suffix.lower() == ".txt" and "requirements" in file.stem.lower():
             repo_info["has_requirements"] = True
+            repo_info["requirements_file"].append(file)
         if file.name.lower() == "pyproject.toml":
             repo_info["has_pyproject"] = True
-        if file.name.lower() == ".env.example":
-            repo_info["has_env_example"] = True
+            repo_info["pyproject_file"].append(file)
 
-        if file.suffix == ".py":
-            repo_info["python_files"].append(file)
+        if (file.name.lower() == ".env.example" or file.name.lower() == "example.env" or file.name.lower().endswith(".env.example")):
+            repo_info["has_env_example"] = True
+            repo_info["env_example_files"].append(file)
 
         if file.is_file():
             repo_info["total_files"] += 1
         if file.is_file() and file.suffix == ".py":
             repo_info["total_python_files"] += 1
+            repo_info["python_files"].append(file)
         if file.is_file() and file.suffix == ".md":
             repo_info["total_markdown_files"] += 1
-        if file.is_file() and file.suffix == ".env":
+        if file.is_file() and "env" in file.name.lower():
             repo_info["total_env_files"] += 1
        
     return repo_info
