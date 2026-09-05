@@ -1,5 +1,3 @@
-# url = input("Enter the GitHub repository URL: ")
-# import os
 from pathlib import Path
 import subprocess
 
@@ -9,9 +7,9 @@ def clone_repository(url):
     repo_name = url.split('/')[-1].replace('.git', '')
 
     temp_dir = Path('temp')
-    temp_dir.mkdir(exist_ok=True)  # Create the temp directory if it doesn't exist
+    temp_dir.mkdir(exist_ok=True)
 
-    repo_path = temp_dir / repo_name  # Path to the cloned repository
+    repo_path = temp_dir / repo_name
 
     # Check if the directory already exists
     if repo_path.exists():
@@ -27,5 +25,3 @@ def clone_repository(url):
         return None
 
     return repo_path
-
-# clone_repository(url)
