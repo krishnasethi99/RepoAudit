@@ -18,11 +18,12 @@ def python_ast_scanner(python_files):
             with open(file, "r", encoding="utf-8") as f:
                 source = f.read()
                 tree = ast.parse(source, filename=str(file))
+
                 # Perform AST analysis on the parsed tree
                 for node in ast.walk(tree):
                     if isinstance(node, ast.Import):
                         for alias in node.names:
-                            ast_info["imports"].add(alias.name.split('.')[0])  # Get the top-level module name
+                            ast_info["imports"].add(alias.name.split('.')[0])
                     elif isinstance(node, ast.ImportFrom):
                         module = node.module
                         if module:
@@ -73,7 +74,6 @@ def python_ast_scanner(python_files):
                 f"{file}: {e}"
             )
             continue
-
 
     ast_info["imports"] = sorted(ast_info["imports"])
     ast_info["env_vars"] = sorted(ast_info["env_vars"])

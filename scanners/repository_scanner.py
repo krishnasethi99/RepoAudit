@@ -1,21 +1,37 @@
 def scan_repository(repo_path):
     repo_info = {
-    "has_readme": False,
-    "has_dockerfile": False,
-    "has_requirements": False,
-    "has_pyproject": False,
-    "has_env_example": False,
-    "total_files": 0,
-    "total_python_files": 0,
-    "total_markdown_files": 0,
-    "total_env_files": 0,
-    "python_files": [],
-    "requirements_file": [],
-    "pyproject_file": [],
-    "env_example_files": [],
-    "readme_files": [],
-    "primary_readme": None,
-    "repo_path": repo_path,
+        "has_readme": False,
+        "has_dockerfile": False,
+        "has_requirements": False,
+        "has_pyproject": False,
+        "has_env_example": False,
+        "total_files": 0,
+        "total_python_files": 0,
+        "total_markdown_files": 0,
+        "total_env_files": 0,
+        "python_files": [],
+        "requirements_file": [],
+        "pyproject_file": [],
+        "env_example_files": [],
+        "readme_files": [],
+        "primary_readme": None,
+        "repo_path": repo_path,
+        "repository_name": repo_path.name,
+    }
+
+    IGNORE_DIRS = {
+        "tests",
+        "test",
+        "docs",
+        "examples",
+        "example",
+        "benchmarks",
+        ".venv",
+        "venv",
+        "__pycache__",
+        ".git",
+        "build",
+        "dist",
     }
 
     if not repo_path:
@@ -23,12 +39,15 @@ def scan_repository(repo_path):
         return
 
     for file in repo_path.rglob("*"):
-        if file.name.lower() == "readme.md" or file.name.lower() == "readme":
-            if file.name.lower() == "readme.md" or file.name.lower() == "readme":
-                repo_info["has_readme"] = True
-                repo_info["readme_files"].append(file)
-                if file.parent == repo_path:
-                    repo_info["primary_readme"] = file
+        if any(part.lower() in IGNORE_DIRS for part in file.parts):
+            continue
+
+        if file.name.lower() in {"readme.md", "readme"}:
+            repo_info["has_readme"] = True
+            repo_info["readme_files"].append(file)
+
+            if repo_info["primary_readme"] is None:
+                repo_info["primary_readme"] = file
 
         if file.name.lower() == "dockerfile":
             repo_info["has_dockerfile"] = True
