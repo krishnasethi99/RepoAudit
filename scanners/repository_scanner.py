@@ -17,6 +17,7 @@ def scan_repository(repo_path):
         "primary_readme": None,
         "repo_path": repo_path,
         "repository_name": repo_path.name,
+        "local_modules": set(),
     }
 
     IGNORE_DIRS = {
@@ -37,6 +38,13 @@ def scan_repository(repo_path):
     if not repo_path:
         print("No repository path provided. Aborting scan.")
         return
+    for item in repo_path.iterdir():
+        if item.name.startswith("."):
+            continue
+        if item.is_dir():
+            repo_info["local_modules"].add(item.name.lower())
+        elif item.suffix == ".py":
+            repo_info["local_modules"].add(item.stem.lower())
 
     for file in repo_path.rglob("*"):
         if any(part.lower() in IGNORE_DIRS for part in file.parts):

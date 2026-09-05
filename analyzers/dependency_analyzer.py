@@ -36,9 +36,19 @@ def dependency_analyzer(repo_info, ast_info):
         for file in repo_info["python_files"]
         if file.name == "__init__.py"
     }
+    project_dirs = {
+        item.name.lower()
+        for item in repo_info["repo_path"].iterdir()
+        if item.is_dir()
+    }
     local_modules = {
         module.lower().replace("-", "_")
-        for module in (local_modules | package_dirs)
+        for module in (
+            local_modules
+            | package_dirs
+            | project_dirs
+            | repo_info.get("local_modules", set())
+        )
     }
 
     imports = set()
@@ -100,6 +110,7 @@ def dependency_analyzer(repo_info, ast_info):
     dependencies["imported_dependencies"] = list(imports)
     imported = set(dependencies["imported_dependencies"])
     imported = {dep.lower().replace("-", "_") for dep in imported}
+
     imported = imported - STANDARD_LIBS -  IGNORED_IMPORTS - local_modules
 
     missing = imported - declared
