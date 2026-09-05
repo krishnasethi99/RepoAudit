@@ -379,8 +379,8 @@ Points are deducted based on onboarding risks.
 |---------|---------|
 | 90 - 100 | READY |
 | 70 - 89 | MINOR_FRICTION |
-| 50 - 69 | DIFFICULT |
-| Below 50 | HIGH_RISK |
+| 40 - 69 | DIFFICULT |
+| Below 40 | HIGH_RISK |
 
 ---
 
